@@ -1,13 +1,28 @@
+import os
+import sys
 import tkinter as tk
 from PIL import ImageTk
 import sqlite3
 from numpy import random
 import pyglet
 
+# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2 # use _MEIPASS / _MEIPASS2 if it doesn't work
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+
 bg_color = "#3d6466"
 
-pyglet.font.add_file("starter_files/fonts/Shanti-Regular.ttf")
-pyglet.font.add_file("starter_files/fonts/Ubuntu-Bold.ttf")
+pyglet.font.add_file(resource_path("fonts\\Shanti-Regular.ttf"))
+pyglet.font.add_file(resource_path("fonts\\Ubuntu-Bold.ttf"))
 
 
 def clear_widgets(frame):
@@ -16,7 +31,7 @@ def clear_widgets(frame):
         
 
 def fetch_db():
-    connection = sqlite3.connect("starter_files/data/recipes.db")
+    connection = sqlite3.connect(resource_path("data\\recipes.db"))
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM sqlite_schema WHERE type='table';")
     all_tables = cursor.fetchall()
@@ -54,7 +69,7 @@ def load_frame1():
 
     # Logo widgets
     global logo_img
-    logo_img = ImageTk.PhotoImage(file="starter_files/assets/RRecipe_logo.png")
+    logo_img = ImageTk.PhotoImage(file=resource_path("assets\\RRecipe_logo.png"))
     logo_widget = tk.Label(frame1, image=logo_img, bg=bg_color)
     logo_widget.image = logo_img
     logo_widget.pack()
@@ -90,7 +105,7 @@ def load_frame2():
     title, ingredients = pre_process(table_name, table_records)
     
      
-    logo_img = ImageTk.PhotoImage(file="starter_files/assets/RRecipe_logo_bottom.png")
+    logo_img = ImageTk.PhotoImage(file=resource_path("assets\\RRecipe_logo_bottom.png"))
     logo_widget = tk.Label(frame2, image=logo_img, bg=bg_color)
     logo_widget.image = logo_img
     logo_widget.pack(pady=20)
